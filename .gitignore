@@ -1,0 +1,26 @@
+
+# Ignore compiled class files
+*.class
+
+# Ignore Eclipse project files
+.classpath
+.project
+.settings/
+
+# Ignore IDE-specific metadata (optional, but recommended)
+*.iml
+*.idea/
+.vscode/
+
+# Ignore build directory
+bin/
+target/
+
+# Ignore generated files (optional)
+*.log
+*.tmp
+
+# Ignore dependency caches (if using Maven or Gradle)
+.m2/
+.gradle/
+build/
