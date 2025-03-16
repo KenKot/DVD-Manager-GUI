@@ -130,6 +130,15 @@ public class DVDCollection {
 		}
 
 	}
+	
+	public boolean containsTitle(String title) {
+		for (int i = 0; i < numdvds; ++i) {
+			if ( title.equals(dvdArray[i].getTitle()) ) {
+				return true;
+			}
+		}
+		return false;
+	}
 
 	public void removeDVD(String title) {
 		boolean shiftElements = false;

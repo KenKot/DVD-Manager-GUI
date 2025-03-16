@@ -7,7 +7,7 @@ import javax.swing.*;
 
 public class DVDGUI implements DVDUserInterface {
 	 
-	 static private int count = 0;
+//	 static private int count = 0;
 	 private DVDCollection dvdlist;
 	 
 	 private String currMessage; 
@@ -41,7 +41,7 @@ public class DVDGUI implements DVDUserInterface {
 		 
 		 do {
 			
-			 String temp = String.valueOf(++count);
+//			 String temp = String.valueOf(++count);
 
 			 choice = JOptionPane.showOptionDialog(null,
 //					 "Select a command", 
@@ -144,50 +144,79 @@ public class DVDGUI implements DVDUserInterface {
 	}
 	
 	private void doRemoveDVD() {
-
-		// Request the title
-		String title = JOptionPane.showInputDialog("Enter title");
-		if (title == null) {
-			return;		// dialog was cancelled
-		}
-		title = title.toUpperCase();
+		String title;
+		String errorMsg = " ";
 		
-                // Remove the matching DVD if found
-                dvdlist.removeDVD(title);
+		// Request the title
+		while (true) {
+			title = JOptionPane.showInputDialog("Enter title\n" + errorMsg);
+			if (title == null) {
+				return;		// dialog was cancelled
+			}
+			title = title.toUpperCase();
+			
+			if (!dvdlist.containsTitle(title)) {
+				errorMsg = "That title doesn't exist";
+				continue;
+			}
+			
+			errorMsg = " ";
+			break;
+		}
+		
+		// Remove the matching DVD if found
+		dvdlist.removeDVD(title);
                 
-                // Display current collection to the console for debugging
-                System.out.println("Removing: " + title);
-                System.out.println(dvdlist);
+        // Display current collection to the console for debugging
+        System.out.println("Removing: " + title);
+        System.out.println(dvdlist);
+        
+        currMessage = title + " has been removed from your collection";
 
 	}
 	
 	private void doGetDVDsByRating() {
-
-		// Request the rating
-		String rating = JOptionPane.showInputDialog("Enter rating");
-		if (rating == null) {
-			return;		// dialog was cancelled
-		}
-		rating = rating.toUpperCase();
+		String rating;
+		String errorMsg = " ";
 		
-                String results = dvdlist.getDVDsByRating(rating);
-                System.out.println("DVDs with rating " + rating);
-                System.out.println(results);
-
+		// Request the rating
+		while (true) {
+			rating = JOptionPane.showInputDialog("Enter rating\n" + errorMsg);
+			if (rating == null) {
+				return;		// dialog was cancelled
+			}
+			rating = rating.toUpperCase();
+			
+			
+			if (!DVDCollection.isValidRating(rating)) {
+				errorMsg = "Enter a valid rating";
+				continue;
+			}
+			
+			errorMsg = " ";
+			break;
+			
+		}
+		
+		String results = dvdlist.getDVDsByRating(rating);
+		System.out.println("DVDs with rating " + rating);
+		System.out.println(results);
+		
+		
+		this.currMessage = results;
 	}
 
         private void doGetTotalRunningTime() {
                  
                 int total = dvdlist.getTotalRunningTime();
-                System.out.println("Total Running Time of DVDs: ");
+                this.currMessage = "Total Running Time of all DVDs is: " + total + " minutes.";
+                
                 System.out.println(total);
                 
         }
 
 	private void doSave() {
-		
 		dvdlist.save();
-		
 	}
 		
 }
