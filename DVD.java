@@ -41,13 +41,7 @@ public class DVD {
 	}
 
 	public String toString() {
-//		String mergedString =  "title = " + this.title + "\n" + 
-//							   "rating = " + this.rating + "\n" +
-//					           "runningTime = " + this.runningTime + "\n";
-		
-//		String mergedString = this.title + "/" + this.rating + "/" + this.runningTime + "min\n";
 		String mergedString = this.title + "," + this.rating + "," + this.runningTime;
-		
 
 		return mergedString;
 	}

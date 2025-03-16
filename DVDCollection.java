@@ -54,20 +54,20 @@ public class DVDCollection {
 		// double the size of the array first.
 
 		// first check if rating and runningTime are valid
-		if (title == null) {
-			System.out.println("Enter a title");
-			return;
-		}
+//		if (title == null) {
+//			System.out.println("Enter a title");
+//			return;
+//		}
 
-		if (!isValidPositiveNumber(runningTime)) {
-			System.out.println("Enter a valid run time");
-			return;
-		}
-
-		if (!isValidRating(rating)) {
-			System.out.println("Enter a valid rating");
-			return;
-		}
+//		if (!isValidPositiveNumber(runningTime)) {
+//			System.out.println("Enter a valid run time");
+//			return;
+//		}
+//
+//		if (!isValidRating(rating)) {
+//			System.out.println("Enter a valid rating");
+//			return;
+//		}
 
 		int runningTimeInteger = Integer.parseInt(runningTime);
 
@@ -264,7 +264,7 @@ public class DVDCollection {
 		return true;
 	}
 
-	static private boolean isValidPositiveNumber(String input) {
+	static public boolean isValidPositiveNumber(String input) {
 		// "0001" into parseInt later will yield 1
 		if (input == null)
 			return false;
@@ -279,7 +279,7 @@ public class DVDCollection {
 		return true;
 	}
 
-	static private boolean isValidRating(String input) {
+	static public boolean isValidRating(String input) {
 		if (input == null)
 			return false;
 		if (input.equals("G"))
