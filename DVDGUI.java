@@ -6,14 +6,10 @@ import java.awt.LayoutManager;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-/**
- * This class is an implementation of DVDUserInterface that uses JOptionPane to
- * display the menu of command choices.
- */
-
 public class DVDGUI implements DVDUserInterface {
 	private DVDCollection dvdlist;
-	
+	private DVD chosenDVD;
+
 	private int ROWS;
 	private int COLS;
 
@@ -24,7 +20,7 @@ public class DVDGUI implements DVDUserInterface {
 
 	public DVDGUI(DVDCollection dl) {
 		dvdlist = dl;
-		
+
 		this.ROWS = 5;
 		this.COLS = 3;
 
@@ -33,73 +29,84 @@ public class DVDGUI implements DVDUserInterface {
 	public void processCommands() {
 		createWindow();
 		return;
-
-//		 String[] commands = {"Add/Modify DVD",
-//				 	"Remove DVD",
-//				 	"Get DVDs By Rating",
-//				 	"Get Total Running Time",
-//				 	"Exit and Save"};
-//		 
-//		 int choice;
-//		 
-//		 do {
-//			
-//
-//			 choice = JOptionPane.showOptionDialog(null,
-//					 currMessage, 
-//					 "DVD Collection", 
-//					 JOptionPane.YES_NO_CANCEL_OPTION, 
-//					 JOptionPane.QUESTION_MESSAGE, 
-//					 null, 
-//					 commands,
-//					 commands[commands.length - 1]);
-//		 
-//			 switch (choice) {
-//			 	case 0: doAddOrModifyDVD(); break;
-//			 	case 1: doRemoveDVD(); break;
-//			 	case 2: doGetDVDsByRating(); break;
-//			 	case 3: doGetTotalRunningTime(); break;
-//			 	case 4: doSave(); break;
-//			 	default:  // do nothing
-//			 }
-//			 
-//		 } while (choice != commands.length-1);
-//		 System.exit(0);
 	}
 
-//	 +++++++++++++++++++++++++++++++++++++++++++++++++++++
-
-//	private static void createWindow() {
 	private void createWindow() {
 		JFrame frame = new JFrame("GUI");
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
 		createUI(frame);
-		frame.setSize(560, 200);
+		frame.setSize(700, 400);
 		frame.setLocationRelativeTo(null); // Center on screen
 		frame.setVisible(true); // make visible
 	}
 
-//	private static void createUI(final JFrame frame) {
 	private void createUI(final JFrame frame) {
 		JPanel panel = new JPanel();
-		LayoutManager layout = new FlowLayout();
-		panel.setLayout(layout);
+		panel.setLayout(new BorderLayout());
 
 		JButton addDVDButton = new JButton("Add DVD");
 		JButton getRuntimeButton = new JButton("Get runtime");
 		JButton cancelButton = new JButton("Cancel");
+
 		cancelButton.setEnabled(false);
 
+		JButton removeDVDButton = new JButton("Remove");
+		removeDVDButton.setVisible(false);
+
+//DISPLAY SINGLE SELECTED DVD
+
+		JPanel infoPanel = new JPanel();
+		infoPanel.setLayout(new BoxLayout(infoPanel, BoxLayout.Y_AXIS));
+		JLabel titleLabel = new JLabel("Title: ");
+		JLabel ratingLabel = new JLabel("Rating: ");
+		JLabel runtimeLabel = new JLabel("Runtime: ");
+		infoPanel.add(titleLabel);
+		infoPanel.add(ratingLabel);
+		infoPanel.add(runtimeLabel);
+		infoPanel.add(removeDVDButton);
+
+//DVD LIST SCROLL PANE
+
+		JList<DVD> dvdJList = new JList<>(dvdlist.getDVDs());
+		JScrollPane allDVDsPane = new JScrollPane(dvdJList);
+
+		dvdJList.addListSelectionListener(e -> {
+			if (!e.getValueIsAdjusting()) {
+				chosenDVD = dvdJList.getSelectedValue();
+
+				if (chosenDVD != null) {
+					titleLabel.setText("Title: " + chosenDVD.getTitle());
+					ratingLabel.setText("Rating: " + chosenDVD.getRating());
+					runtimeLabel.setText("Runtime: " + chosenDVD.getRunningTime() + " minutes");
+					removeDVDButton.setVisible(true);
+				} else {
+					removeDVDButton.setVisible(false);
+				}
+			}
+		});
+
+		removeDVDButton.addActionListener(e -> {
+			dvdlist.removeDVD(chosenDVD.getTitle());
+			JOptionPane.showMessageDialog(frame, "Removed: " + chosenDVD.getTitle());
+			chosenDVD = null;
+			titleLabel.setText("Title: ");
+			ratingLabel.setText("Rating: ");
+			runtimeLabel.setText("Runtime: ");
+			removeDVDButton.setVisible(false);
+			dvdJList.setListData(dvdlist.getDVDs());
+//			refreshJList();
+			dvdlist.save();
+		});
 // +++++++++++++++++++++++++++++++++++++++++++++++
 //		ACTION LISTENERS:
 // +++++++++++++++++++++++++++++++++++++++++++++++
 
 		getRuntimeButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				JPanel runtimePanel = new JPanel(new GridLayout(ROWS, COLS)); 
+				JPanel runtimePanel = new JPanel(new GridLayout(ROWS, COLS));
 				runtimePanel.add(new JLabel("Runtime: " + dvdlist.getTotalRunningTime()));
-				JOptionPane.showMessageDialog(frame, runtimePanel );
+				JOptionPane.showMessageDialog(frame, runtimePanel);
 			}
 		});
 
@@ -112,8 +119,8 @@ public class DVDGUI implements DVDUserInterface {
 
 				while (true) {
 
-					JPanel newDVDPanel = new JPanel(new GridLayout(ROWS, COLS)); // change values
-					// JPanel newDVDPanel = new JPanel(new FlowLayout()); // change values
+					JPanel newDVDPanel = new JPanel(new GridLayout(ROWS, COLS)); 
+					// JPanel newDVDPanel = new JPanel(new FlowLayout()); 
 
 					newDVDPanel.add(new javax.swing.JLabel("Title: "));
 					newDVDPanel.add(title);
@@ -122,10 +129,9 @@ public class DVDGUI implements DVDUserInterface {
 					newDVDPanel.add(new javax.swing.JLabel("Run Time (minutes): "));
 					newDVDPanel.add(runtime);
 
-//					newDVDPanel.add(new javax.swing.JLabel("Error Message (to delete): " + errorMsg + "\n")); // TODO: Remove
-					newDVDPanel.add(new javax.swing.JLabel(errorMsg)); // TODO: Remove
-																		// "ERROR
-																		// MESSAGE" PART
+					newDVDPanel.add(new javax.swing.JLabel(errorMsg)); 
+																		
+																		
 
 					int result = JOptionPane.showConfirmDialog(frame, newDVDPanel, "Add New DVD",
 							JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
@@ -155,15 +161,12 @@ public class DVDGUI implements DVDUserInterface {
 
 						String message = "Succesfully Added " + titleText;
 						JOptionPane.showMessageDialog(frame, message);
-//						cancelButton.setEnabled(true);
-//						DVDGUI.this.dvdlist.addOrModifyDVD(titleText, ratingText, runtimeText);
 						dvdlist.addOrModifyDVD(titleText, ratingText, runtimeText);
 
-//						TO DO - TO DELETE
-//						System.out.println("Adding/Modifying: " + title + "," + rating + "," + time);
-						System.out.println(DVDGUI.this.dvdlist);
 
 						dvdlist.save();
+//						refreshJList();
+						dvdJList.setListData(dvdlist.getDVDs());
 						break;
 					}
 
@@ -171,78 +174,23 @@ public class DVDGUI implements DVDUserInterface {
 			}
 		});
 
-		panel.add(addDVDButton);
-		panel.add(getRuntimeButton);
+		JPanel topPanel = new JPanel(new FlowLayout());
+		topPanel.add(addDVDButton);
+		topPanel.add(getRuntimeButton);
 
-		frame.getContentPane().add(panel, BorderLayout.CENTER);
+		JPanel centerPanel = new JPanel(new FlowLayout());
+		centerPanel.add(allDVDsPane);
+		centerPanel.add(infoPanel);
+
+		panel.add(topPanel, BorderLayout.NORTH);
+		panel.add(centerPanel, BorderLayout.CENTER);
+
+		frame.getContentPane().add(panel);
 
 	}
 
 //	 +++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-	private void doRemoveDVD() {
-		String title;
-		String errorMsg = " ";
 
-		// Request the title
-		while (true) {
-			title = JOptionPane.showInputDialog("Enter title\n" + errorMsg);
-			if (title == null) {
-				return; // dialog was cancelled
-			}
-			title = title.toUpperCase();
-
-			if (!dvdlist.containsTitle(title)) {
-				errorMsg = "That title doesn't exist";
-				continue;
-			}
-
-			errorMsg = " ";
-			break;
-		}
-
-		// Remove the matching DVD if found
-		dvdlist.removeDVD(title);
-
-		// Display current collection to the console for debugging
-		System.out.println("Removing: " + title);
-		System.out.println(dvdlist);
-
-		currMessage = title + " has been removed from your collection";
-
-	}
-
-	private void doGetDVDsByRating() {
-		String rating;
-		String errorMsg = " ";
-
-		// Request the rating
-		while (true) {
-			rating = JOptionPane.showInputDialog("Enter rating\n" + errorMsg);
-			if (rating == null) {
-				return; // dialog was cancelled
-			}
-			rating = rating.toUpperCase();
-
-			if (!DVDCollection.isValidRating(rating)) {
-				errorMsg = "Enter a valid rating";
-				continue;
-			}
-
-			errorMsg = " ";
-			break;
-
-		}
-
-		String results = dvdlist.getDVDsByRating(rating);
-		System.out.println("DVDs with rating " + rating);
-		System.out.println(results);
-
-		this.currMessage = results;
-	}
-
-	private void doSave() {
-		dvdlist.save();
-	}
 
 }

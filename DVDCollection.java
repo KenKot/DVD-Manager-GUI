@@ -28,6 +28,15 @@ public class DVDCollection {
 		numdvds = 0;
 		dvdArray = new DVD[7];
 	}
+	
+	public DVD[] getDVDs() {
+		DVD[] dvds = new DVD[numdvds];
+		
+		for (int i = 0; i < numdvds; ++i) {
+			dvds[i] = dvdArray[i];
+		}
+		return dvds;
+	}
 
 	public String toString() {
 		// Return a string containing all the DVDs in the
@@ -175,20 +184,31 @@ public class DVDCollection {
 		}
 	}
 
-	public String getDVDsByRating(String rating) {
-		String mergedString = "";
-
-		for (int i = 0; i < numdvds; ++i) {
-			if (rating.equals(dvdArray[i].getRating())) {
-				mergedString += dvdArray[i].toString() + "min";
-			}
-		}
-		
-		if (mergedString.length() == 0) return "No DVDs found";
-
-		return mergedString;
-
-	}
+	// have GUI filter
+	
+//	public DVD[] getDVDsByRating(String rating) {
+//		DVD[] dvds = new DVD[numdvds];
+//		
+//		for (int i = 0; i < numdvds; ++i) {
+//			dvds[i] = dvdArray[i];
+//		}
+//		return dvds;
+//	}
+//	public String getDVDsByRating(String rating) {
+//	public DVD[] getDVDsByRating(String rating) {
+//		String mergedString = "";
+//
+//		for (int i = 0; i < numdvds; ++i) {
+//			if (rating.equals(dvdArray[i].getRating())) {
+//				mergedString += dvdArray[i].toString() + "min";
+//			}
+//		}
+//		
+//		if (mergedString.length() == 0) return "No DVDs found";
+//
+//		return mergedString;
+//
+//	}
 
 	public int getTotalRunningTime() {
 		int totalRunningTime = 0;
