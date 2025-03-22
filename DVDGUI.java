@@ -53,7 +53,8 @@ public class DVDGUI implements DVDUserInterface {
 
 		JButton removeDVDButton = new JButton("Remove");
 		removeDVDButton.setVisible(false);
-
+		JButton updateDVDButton = new JButton("Update");
+		updateDVDButton.setVisible(false);
 //DISPLAY SINGLE SELECTED DVD
 
 		JPanel infoPanel = new JPanel();
@@ -65,6 +66,7 @@ public class DVDGUI implements DVDUserInterface {
 		infoPanel.add(ratingLabel);
 		infoPanel.add(runtimeLabel);
 		infoPanel.add(removeDVDButton);
+		infoPanel.add(updateDVDButton);
 
 //DVD LIST SCROLL PANE
 
@@ -80,12 +82,98 @@ public class DVDGUI implements DVDUserInterface {
 					ratingLabel.setText("Rating: " + chosenDVD.getRating());
 					runtimeLabel.setText("Runtime: " + chosenDVD.getRunningTime() + " minutes");
 					removeDVDButton.setVisible(true);
+					updateDVDButton.setVisible(true);
 				} else {
-					removeDVDButton.setVisible(false);
+					updateDVDButton.setVisible(false);
 				}
 			}
 		});
 
+		updateDVDButton.addActionListener(e -> {
+//			dvdlist.removeDVD(chosenDVD.getTitle());
+//			JOptionPane.showMessageDialog(frame, "Removed: " + chosenDVD.getTitle());
+//			chosenDVD = null;
+//			titleLabel.setText("Title: ");
+//			ratingLabel.setText("Rating: ");
+//			runtimeLabel.setText("Runtime: ");
+//			dvdJList.setListData(dvdlist.getDVDs());
+//			refreshJList();
+
+//			dvdlist.save();
+			String errorMsg = "";
+			JTextField title = new JTextField(10);
+			JTextField rating = new JTextField(10);
+			JTextField runtime = new JTextField(10);
+			
+			String oldTitle = chosenDVD.getTitle();
+			String oldRating = chosenDVD.getRating();
+			String oldRuntime = String.valueOf(chosenDVD.getRunningTime());
+			
+			title.setText(oldTitle);
+			rating.setText(oldRating);
+			runtime.setText(oldRuntime);
+
+			while (true) {
+
+				JPanel newDVDPanel = new JPanel(new GridLayout(ROWS, COLS));
+				// JPanel newDVDPanel = new JPanel(new FlowLayout());
+
+				newDVDPanel.add(new javax.swing.JLabel("Title: "));
+				newDVDPanel.add(title);
+				newDVDPanel.add(new javax.swing.JLabel("Rating (G, PG, PG-13, R): "));
+				newDVDPanel.add(rating);
+				newDVDPanel.add(new javax.swing.JLabel("Run Time (minutes): "));
+				newDVDPanel.add(runtime);
+
+				newDVDPanel.add(new javax.swing.JLabel(errorMsg));
+
+				int result = JOptionPane.showConfirmDialog(frame, newDVDPanel, "Update DVD",
+						JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
+
+				if (result == JOptionPane.CANCEL_OPTION || result == JOptionPane.CLOSED_OPTION) {
+					break;
+				}
+
+				if (result == JOptionPane.OK_OPTION) {
+					String titleText = title.getText().toUpperCase();
+					String ratingText = rating.getText().toUpperCase();
+					String runtimeText = runtime.getText().toUpperCase();
+
+					if (titleText.length() == 0) {
+						errorMsg = "Title can't be empty";
+						continue;
+					}
+					if (!DVDCollection.isValidRating(ratingText)) {
+						errorMsg = "Enter a valid rating";
+						continue;
+					}
+
+					if (!DVDCollection.isValidPositiveNumber(runtimeText)) {
+						errorMsg = "Enter a valid run time";
+						continue;
+					}
+
+					String message = "Succesfully updated " + titleText;
+					JOptionPane.showMessageDialog(frame, message);
+					
+					
+					if (titleText != oldTitle) {
+						// needed to handle cases where the title is updated,
+						// since addorModify will create new dvd if title doesnt exist in collection
+						// but will update the attributes if it does
+						dvdlist.removeDVD(oldTitle); 						
+					}
+					
+					dvdlist.addOrModifyDVD(titleText, ratingText, runtimeText);
+
+					dvdlist.save();
+//						refreshJList();
+					dvdJList.setListData(dvdlist.getDVDs());
+					break;
+				}
+
+			}
+		});
 		removeDVDButton.addActionListener(e -> {
 			dvdlist.removeDVD(chosenDVD.getTitle());
 			JOptionPane.showMessageDialog(frame, "Removed: " + chosenDVD.getTitle());
@@ -119,8 +207,8 @@ public class DVDGUI implements DVDUserInterface {
 
 				while (true) {
 
-					JPanel newDVDPanel = new JPanel(new GridLayout(ROWS, COLS)); 
-					// JPanel newDVDPanel = new JPanel(new FlowLayout()); 
+					JPanel newDVDPanel = new JPanel(new GridLayout(ROWS, COLS));
+					// JPanel newDVDPanel = new JPanel(new FlowLayout());
 
 					newDVDPanel.add(new javax.swing.JLabel("Title: "));
 					newDVDPanel.add(title);
@@ -129,9 +217,7 @@ public class DVDGUI implements DVDUserInterface {
 					newDVDPanel.add(new javax.swing.JLabel("Run Time (minutes): "));
 					newDVDPanel.add(runtime);
 
-					newDVDPanel.add(new javax.swing.JLabel(errorMsg)); 
-																		
-																		
+					newDVDPanel.add(new javax.swing.JLabel(errorMsg));
 
 					int result = JOptionPane.showConfirmDialog(frame, newDVDPanel, "Add New DVD",
 							JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
@@ -163,7 +249,6 @@ public class DVDGUI implements DVDUserInterface {
 						JOptionPane.showMessageDialog(frame, message);
 						dvdlist.addOrModifyDVD(titleText, ratingText, runtimeText);
 
-
 						dvdlist.save();
 //						refreshJList();
 						dvdJList.setListData(dvdlist.getDVDs());
@@ -190,7 +275,5 @@ public class DVDGUI implements DVDUserInterface {
 	}
 
 //	 +++++++++++++++++++++++++++++++++++++++++++++++++++++
-
-
 
 }
