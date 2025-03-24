@@ -28,14 +28,24 @@ public class DVDCollection {
 		numdvds = 0;
 		dvdArray = new DVD[7];
 	}
-	
+
 	public DVD[] getDVDs() {
 		DVD[] dvds = new DVD[numdvds];
-		
+
 		for (int i = 0; i < numdvds; ++i) {
 			dvds[i] = dvdArray[i];
 		}
 		return dvds;
+	}
+
+	public DVD getDVDByTitle(String title) {
+
+		for (int i = 0; i < numdvds; ++i) {
+			if (dvdArray[i].getTitle().equals(title)) {
+				return dvdArray[i];
+			}
+		}
+		return null;
 	}
 
 	public String toString() {
@@ -50,7 +60,10 @@ public class DVDCollection {
 		String mergedString = "numdvds = " + this.numdvds + "\n" + "dvdArray.length = " + this.dvdArray.length + "\n";
 
 		for (int i = 0; i < this.numdvds; ++i) {
-			mergedString += "dvdArray[" + i + "] = " + dvdArray[i].toString() + "min\n";
+			mergedString += "dvdArray[" + i + "] = " + dvdArray[i].toString2() + "min\n";
+//			String dvdInfo = dvdArray[i].getTitle() + "," + dvdArray[i].getRating() + ","
+//					+ dvdArray[i].getRunningTime();
+//			mergedString += "dvdArray[" + i + "] = " + dvdInfo + "min\n";
 		}
 
 		return mergedString;
@@ -139,10 +152,10 @@ public class DVDCollection {
 		}
 
 	}
-	
+
 	public boolean containsTitle(String title) {
 		for (int i = 0; i < numdvds; ++i) {
-			if ( title.equals(dvdArray[i].getTitle()) ) {
+			if (title.equals(dvdArray[i].getTitle())) {
 				return true;
 			}
 		}
@@ -185,7 +198,7 @@ public class DVDCollection {
 	}
 
 	// have GUI filter
-	
+
 //	public DVD[] getDVDsByRating(String rating) {
 //		DVD[] dvds = new DVD[numdvds];
 //		
@@ -223,10 +236,9 @@ public class DVDCollection {
 	public void loadData(String filename) {
 		File file = new File(filename);
 		this.sourceName = filename;
-		
+
 		if (!file.exists())
 			return;
-
 
 		try {
 			Scanner sc = new Scanner(file);
@@ -267,16 +279,16 @@ public class DVDCollection {
 		File file = new File(this.sourceName);
 
 		try {
-				file.createNewFile();
-				FileWriter myWriter = new FileWriter(this.sourceName);
+			file.createNewFile();
+			FileWriter myWriter = new FileWriter(this.sourceName);
 
-				for (int i = 0; i < numdvds; ++i) {
-					myWriter.write(dvdArray[i].toString());
-					myWriter.write("\n");
-				}
+			for (int i = 0; i < numdvds; ++i) {
+				myWriter.write(dvdArray[i].toString2());
+				myWriter.write("\n");
+			}
 
-				myWriter.close();
-				this.modified = false;
+			myWriter.close();
+			this.modified = false;
 		} catch (IOException e1) {
 			e1.printStackTrace();
 		}

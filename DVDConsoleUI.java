@@ -113,9 +113,9 @@ public class DVDConsoleUI implements DVDUserInterface {
 		}
 		rating = rating.toUpperCase();
 		
-		String results = dvdlist.getDVDsByRating(rating);
+//		String results = dvdlist.getDVDsByRating(rating);
 		System.out.println("DVDs with rating " + rating);
-		System.out.println(results);		
+//		System.out.println(results);		
 
 	}
 	

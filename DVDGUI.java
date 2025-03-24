@@ -104,11 +104,11 @@ public class DVDGUI implements DVDUserInterface {
 			JTextField title = new JTextField(10);
 			JTextField rating = new JTextField(10);
 			JTextField runtime = new JTextField(10);
-			
+
 			String oldTitle = chosenDVD.getTitle();
 			String oldRating = chosenDVD.getRating();
 			String oldRuntime = String.valueOf(chosenDVD.getRunningTime());
-			
+
 			title.setText(oldTitle);
 			rating.setText(oldRating);
 			runtime.setText(oldRuntime);
@@ -155,20 +155,28 @@ public class DVDGUI implements DVDUserInterface {
 
 					String message = "Succesfully updated " + titleText;
 					JOptionPane.showMessageDialog(frame, message);
-					
-					
-					if (titleText != oldTitle) {
+
+					if (!titleText.equals(oldTitle)) {
 						// needed to handle cases where the title is updated,
 						// since addorModify will create new dvd if title doesnt exist in collection
 						// but will update the attributes if it does
-						dvdlist.removeDVD(oldTitle); 						
+						dvdlist.removeDVD(oldTitle);
 					}
-					
-					dvdlist.addOrModifyDVD(titleText, ratingText, runtimeText);
 
+					dvdlist.addOrModifyDVD(titleText, ratingText, runtimeText);
 					dvdlist.save();
-//						refreshJList();
 					dvdJList.setListData(dvdlist.getDVDs());
+
+					DVD updated = dvdlist.getDVDByTitle(titleText);
+					chosenDVD = updated;
+					dvdJList.setSelectedValue(updated, true);
+
+					titleLabel.setText("Title: " + updated.getTitle());
+					ratingLabel.setText("Rating: " + updated.getRating());
+					runtimeLabel.setText("Runtime: " + updated.getRunningTime() + " minutes");
+
+					removeDVDButton.setVisible(true);
+					updateDVDButton.setVisible(true);
 					break;
 				}
 

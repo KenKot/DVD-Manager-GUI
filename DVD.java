@@ -2,29 +2,25 @@ public class DVD {
 
 	// Fields:
 
-	private String title;		// Title of this DVD
-	private String rating;		// Rating of this DVD
-	private int runningTime;	// Running time of this DVD in minutes
+	private String title; // Title of this DVD
+	private String rating; // Rating of this DVD
+	private int runningTime; // Running time of this DVD in minutes
 
-	public DVD(String dvdTitle, String dvdRating, int dvdRunningTime) 
-	{
+	public DVD(String dvdTitle, String dvdRating, int dvdRunningTime) {
 		this.title = dvdTitle;
 		this.rating = dvdRating;
 		this.runningTime = dvdRunningTime;
 	}
-	
-	public String getTitle() 
-	{
+
+	public String getTitle() {
 		return this.title;
 	}
-	
-	public String getRating() 
-	{
+
+	public String getRating() {
 		return this.rating;
 	}
-	
-	public int getRunningTime() 
-	{
+
+	public int getRunningTime() {
 		return this.runningTime;
 	}
 
@@ -41,9 +37,13 @@ public class DVD {
 	}
 
 	public String toString() {
-		String mergedString = this.title + "," + this.rating + "," + this.runningTime;
-
-		return mergedString;
+		// update so only title shows in scroll pane
+		return this.getTitle();
 	}
-	
+
+	public String toString2() {
+		String mergedString = this.title + "," + this.rating + "," + this.runningTime;
+		return mergedString;
+
+	}
 }
