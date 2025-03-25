@@ -29,13 +29,36 @@ public class DVDCollection {
 		dvdArray = new DVD[7];
 	}
 
-	public DVD[] getDVDs() {
-		DVD[] dvds = new DVD[numdvds];
+	public DVD[] getDVDs(String rating) {
+		if (rating.equals("")) {
+			DVD[] dvds = new DVD[numdvds];
+
+			for (int i = 0; i < numdvds; ++i) {
+				dvds[i] = dvdArray[i];
+			}
+			return dvds;
+
+		}
+
+		int arrSize = 0;
 
 		for (int i = 0; i < numdvds; ++i) {
-			dvds[i] = dvdArray[i];
+			if (dvdArray[i].getRating().equals(rating)) {
+				arrSize += 1;
+			}
 		}
+
+		DVD[] dvds = new DVD[arrSize];
+		int i = 0;
+		for (int j = 0; j < numdvds; ++j) {
+			if (dvdArray[j].getRating().equals(rating)) {
+				dvds[i] = dvdArray[j];
+				i += 1;
+			}
+		}
+
 		return dvds;
+
 	}
 
 	public DVD getDVDByTitle(String title) {
