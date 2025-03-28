@@ -290,7 +290,7 @@ public class DVDCollection {
 			sc.close();
 
 		} catch (Exception e) {
-			System.out.println(e + " - loading error");
+//			System.out.println(e + " - loading error");
 		}
 
 	}
